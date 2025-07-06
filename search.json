@@ -18,6 +18,6 @@
     "href": "index.html",
     "title": "New Energy Vehicles",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+    "text": "Fault conditions in new energy vehicles can be revealed by analyzing electrical and environmental sensor data. The NEV Fault Dataset was collected from real-world electric vehicle sensors by a third-party research source in 2023. We cleaned the data by removing extra punctuation and converting key variables like voltage, current, motor speed, temperature, vibration, ambient temperature, and humidity into numeric values for analysis. Our findings suggest that vehicles with higher temperature, vibration, or humidity readings are more likely to show fault conditions, which can potentially be predicted using sensor data."
   }
 ]
