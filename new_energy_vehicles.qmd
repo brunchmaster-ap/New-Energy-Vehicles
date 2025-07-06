@@ -1,0 +1,108 @@
+---
+title: "NEV Fault Dataset Analysis"
+format: html
+jupyter: false
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r, echo=FALSE}
+library(tidyverse)
+library(plotly)
+library(gganimate)
+library(transformr)
+library(magick)
+library(ggplot2)
+  # needed for gganimate smooth transitions
+
+nev_raw <- read_csv("C:/Users/anshb/Downloads/NEV_fault_dataset new (1).csv", col_types = cols(.default = "c"))
+
+numeric_cols <- c("Voltage (V)", "Current (A)", "Motor Speed (RPM)", "Temperature (°C)", 
+                  "Vibration (g)", "Ambient Temp (°C)", "Humidity (%)")
+
+nev <- nev_raw %>%
+  mutate(across(all_of(numeric_cols), ~ as.numeric(str_remove_all(., "\\."))))
+
+# Quick glimpse
+glimpse(nev)
+```
+
+**Interactive Scatter Plot: Voltage vs Current**
+
+```{r, echo=FALSE}
+p1 <- ggplot(nev, aes(x = `Voltage (V)`, y = `Current (A)`, color = factor(`Fault Label`))) +
+  geom_point(alpha = 0.7) +
+  labs(
+    title = "Voltage vs Current by Fault Label",
+    x = "Voltage (V)",
+    y = "Current (A)",
+    color = "Fault Label"
+  ) +
+  theme_minimal()
+
+ggplotly(p1)
+```
+
+This interactive scatter plot shows how voltage and current measurements vary across different fault labels. You can zoom, pan, and hover to explore patterns in the dataset.
+
+**Interactive Line Plot: Motor Speed over Temperature by Fault Label**
+
+```{r interactive-plot, echo=FALSE}
+library(ggplot2)
+library(plotly)
+
+p2 <- ggplot(nev, aes(x = `Temperature (°C)`, y = `Motor Speed (RPM)`, color = factor(`Fault Label`))) +
+  geom_point() +
+  labs(
+    title = "Motor Speed vs Temperature by Fault Label",
+    x = "Temperature (°C)",
+    y = "Motor Speed (RPM)",
+    color = "Fault Label"
+  ) +
+  theme_minimal()
+
+ggplotly(p2)
+```
+
+This animated line plot reveals the relationship between motor speed and temperature for each fault label, cycling through fault types so you can see how behavior changes.
+
+**Interactive Histogram: Distribution of Vibration (g)**
+
+```{r, echo=FALSE}
+p3 <- ggplot(nev, aes(x = `Vibration (g)`, fill = factor(`Fault Label`))) +
+  geom_histogram(position = "identity", alpha = 0.6, bins = 30) +
+  labs(
+    title = "Distribution of Vibration by Fault Label",
+    x = "Vibration (g)",
+    fill = "Fault Label"
+  ) +
+  theme_minimal()
+
+ggplotly(p3)
+```
+
+This interactive histogram shows the distribution of vibration intensity for different fault labels, letting you compare how vibration varies with fault type.
+
+**Interactive Scatter Plot: Ambient Temperature vs Humidity**
+
+```{r ambient-humidity-scatter, echo=FALSE}
+p4 <- ggplot(nev, aes(x = `Ambient Temp (°C)`, y = `Humidity (%)`, color = factor(`Fault Label`))) +
+  geom_point(alpha = 0.7) +
+  labs(
+    title = "Ambient Temperature vs Humidity by Fault Label",
+    x = "Ambient Temperature (°C)",
+    y = "Humidity (%)",
+    color = "Fault Label"
+  ) +
+  theme_minimal()
+
+ggplotly(p4)
+```
+
+This interactive scatter plot shows how ambient temperature and humidity measurements vary for each fault label. By exploring this plot, you can spot possible clusters or trends that might reveal how environmental conditions relate to different fault scenarios.
+
+**Final Summary**
+
+*These interactive and animated plots provide a clear overview of how the main factors in the NEV fault dataset relate to each other. By visualizing voltage, current, motor speed, temperature, vibration, ambient temperature, and humidity alongside fault labels, we can spot trends and clusters that may reveal how faults develop under different conditions. Together, these insights can help support better monitoring, fault detection, and maintenance planning for electric vehicles.*
