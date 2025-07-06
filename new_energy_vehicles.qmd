@@ -3,7 +3,7 @@ title: "NEV Fault Dataset Analysis"
 format: html
 jupyter: false
 execute:
-  echo: true
+  echo: false
   warning: false
   message: false
 ---
@@ -15,6 +15,7 @@ library(gganimate)
 library(transformr)
 library(magick)
 library(ggplot2)
+library(hexbin)
   # needed for gganimate smooth transitions
 
 nev_raw <- read_csv("C:/Users/anshb/Downloads/NEV_fault_dataset new (1).csv", col_types = cols(.default = "c"))
@@ -25,83 +26,102 @@ numeric_cols <- c("Voltage (V)", "Current (A)", "Motor Speed (RPM)", "Temperatur
 nev <- nev_raw %>%
   mutate(across(all_of(numeric_cols), ~ as.numeric(str_remove_all(., "\\."))))
 
-# Quick glimpse
-glimpse(nev)
 ```
 
 **Interactive Scatter Plot: Voltage vs Current**
 
-```{r, echo=FALSE}
-p1 <- ggplot(nev, aes(x = `Voltage (V)`, y = `Current (A)`, color = factor(`Fault Label`))) +
-  geom_point(alpha = 0.7) +
+```{r voltage-current-plot, echo=FALSE}
+
+p1 <- ggplot(nev, aes(x = `Voltage (V)`, y = `Current (A)`)) +
+  stat_binhex(bins = 50) +
+  scale_fill_viridis_c() +
   labs(
-    title = "Voltage vs Current by Fault Label",
+    title = "Voltage vs Current Density",
     x = "Voltage (V)",
     y = "Current (A)",
-    color = "Fault Label"
+    fill = "Count"
   ) +
-  theme_minimal()
+  theme_minimal(base_size = 14)
 
 ggplotly(p1)
 ```
 
+
+
 This interactive scatter plot shows how voltage and current measurements vary across different fault labels. You can zoom, pan, and hover to explore patterns in the dataset.
 
-**Interactive Line Plot: Motor Speed over Temperature by Fault Label**
+**Interactive Box Plot: Motor Speed over Temperature by Fault Label**
 
-```{r interactive-plot, echo=FALSE}
-library(ggplot2)
-library(plotly)
-
-p2 <- ggplot(nev, aes(x = `Temperature (°C)`, y = `Motor Speed (RPM)`, color = factor(`Fault Label`))) +
-  geom_point() +
+```{r motor-speed-boxplot, echo=FALSE}
+p2_boxplot <- ggplot(nev, aes(x = factor(`Fault Label`), y = `Motor Speed (RPM)`, fill = factor(`Fault Label`))) +
+  geom_boxplot(alpha = 0.8, outlier.color = "red", outlier.size = 1) +
+  scale_fill_brewer(palette = "Set2") +
   labs(
-    title = "Motor Speed vs Temperature by Fault Label",
-    x = "Temperature (°C)",
-    y = "Motor Speed (RPM)",
-    color = "Fault Label"
+    title = "Motor Speed Distribution by Fault Label",
+    x = "Fault Label",
+    y = "Motor Speed (RPM)"
   ) +
-  theme_minimal()
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "none",
+    panel.grid.minor = element_blank()
+  )
 
-ggplotly(p2)
+ggplotly(p2_boxplot)
 ```
+
+
 
 This animated line plot reveals the relationship between motor speed and temperature for each fault label, cycling through fault types so you can see how behavior changes.
 
 **Interactive Histogram: Distribution of Vibration (g)**
 
-```{r, echo=FALSE}
+```{r vibration-histogram, echo=FALSE}
 p3 <- ggplot(nev, aes(x = `Vibration (g)`, fill = factor(`Fault Label`))) +
-  geom_histogram(position = "identity", alpha = 0.6, bins = 30) +
+  geom_histogram(position = "identity", alpha = 0.6, bins = 30, color = "black") +
+  scale_fill_brewer(palette = "Set2") +
   labs(
     title = "Distribution of Vibration by Fault Label",
     x = "Vibration (g)",
     fill = "Fault Label"
   ) +
-  theme_minimal()
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid.minor = element_blank()
+  )
 
-ggplotly(p3)
+ggplotly(p3) %>% layout(legend = list(title=list(text='Fault Label')))
 ```
+
+
 
 This interactive histogram shows the distribution of vibration intensity for different fault labels, letting you compare how vibration varies with fault type.
 
 **Interactive Scatter Plot: Ambient Temperature vs Humidity**
 
-```{r ambient-humidity-scatter, echo=FALSE}
-p4 <- ggplot(nev, aes(x = `Ambient Temp (°C)`, y = `Humidity (%)`, color = factor(`Fault Label`))) +
-  geom_point(alpha = 0.7) +
+```{r ambient-temp-violin, echo=FALSE}
+p4_violin <- ggplot(nev, aes(x = factor(`Fault Label`), y = `Ambient Temp (°C)`, fill = factor(`Fault Label`))) +
+  geom_violin(alpha = 0.8, trim = TRUE) +
+  scale_fill_brewer(palette = "Set2") +
   labs(
-    title = "Ambient Temperature vs Humidity by Fault Label",
-    x = "Ambient Temperature (°C)",
-    y = "Humidity (%)",
-    color = "Fault Label"
+    title = "Ambient Temperature Distribution by Fault Label",
+    x = "Fault Label",
+    y = "Ambient Temperature (°C)"
   ) +
-  theme_minimal()
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "none",
+    panel.grid.minor = element_blank()
+  )
 
-ggplotly(p4)
+ggplotly(p4_violin)
 ```
 
+
+
 This interactive scatter plot shows how ambient temperature and humidity measurements vary for each fault label. By exploring this plot, you can spot possible clusters or trends that might reveal how environmental conditions relate to different fault scenarios.
+
+
 
 **Final Summary**
 

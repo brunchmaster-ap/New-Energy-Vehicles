@@ -1,0 +1,21 @@
+project:
+  type: website
+
+website:
+  title: "New Energy Vehicles"
+  navbar:
+    left:
+      - href: new_energy_vehicles.qmd
+        text: Home
+      - about.qmd
+
+format:
+  html:
+    theme:
+      - cosmo
+      - brand
+    css: styles.css
+    toc: true
+
+
+
