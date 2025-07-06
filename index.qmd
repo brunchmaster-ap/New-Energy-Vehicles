@@ -3,4 +3,5 @@ title: "New Energy Vehicles"
 format: html
 ---
 
-This project explores the NEV (New Energy Vehicle) Fault Dataset to uncover patterns in key electrical and environmental variables that relate to vehicle faults. Using clear visualizations and interactive plots, we analyze how voltage, current, motor speed, temperature, vibration, ambient temperature, and humidity vary across different fault labels. These insights help identify relationships and trends that can support better fault detection, predictive maintenance, and improved reliability for electric vehicles. This project demonstrates the power of data analysis to reveal hidden issues and guide smarter decisions in sustainable transportation.
+Fault conditions in new energy vehicles can be revealed by analyzing electrical and environmental sensor data. The NEV Fault Dataset was collected from real-world electric vehicle sensors by a third-party research source in 2023. We cleaned the data by removing extra punctuation and converting key variables like voltage, current, motor speed, temperature, vibration, ambient temperature, and humidity into numeric values for analysis. Our findings suggest that vehicles with higher temperature, vibration, or humidity readings are more likely to show fault conditions, which can potentially be predicted using sensor data.
+
