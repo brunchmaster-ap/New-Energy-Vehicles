@@ -8,43 +8,40 @@ execute:
   message: false
 ---
 
-```{r, echo=FALSE}
+```{r}
+# ✅ Libraries
 library(tidyverse)
 library(plotly)
-library(gganimate)
-library(transformr)
-library(magick)
-library(ggplot2)
-library(hexbin)
-  # needed for gganimate smooth transitions
+library(scales)
+library(viridis)  # viridis for color-safe blue-green
 
-nev_raw <- read_csv("C:/Users/anshb/Downloads/NEV_fault_dataset new (1).csv", col_types = cols(.default = "c"))
-
-numeric_cols <- c("Voltage (V)", "Current (A)", "Motor Speed (RPM)", "Temperature (°C)", 
-                  "Vibration (g)", "Ambient Temp (°C)", "Humidity (%)")
-
-nev <- nev_raw %>%
-  mutate(across(all_of(numeric_cols), ~ as.numeric(str_remove_all(., "\\."))))
-
+# ✅ Good theme, defined ONCE
 better_theme <- theme_minimal(base_size = 14) +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1),
     axis.text.y = element_text(size = 12),
     panel.grid.minor = element_blank()
   )
+
+# ✅ Load data
+nev_raw <- read_csv("C:/Users/anshb/Downloads/NEV_fault_dataset new (1).csv",
+                    col_types = cols(.default = "c"))
+
+numeric_cols <- c("Voltage (V)", "Current (A)", "Motor Speed (RPM)",
+                  "Temperature (°C)", "Vibration (g)",
+                  "Ambient Temp (°C)", "Humidity (%)")
+
+nev <- nev_raw %>%
+  mutate(across(all_of(numeric_cols), ~ as.numeric(str_remove_all(., "\\."))))
 ```
 
-
-
 ```{r}
-library(scales)  # make sure it's loaded
-
-# --- 1. Voltage vs Current ---
+# ✅ 1) Voltage vs Current — binhex, blue-green, short scale
 p1 <- ggplot(nev, aes(x = `Voltage (V)`, y = `Current (A)`)) +
   stat_binhex(bins = 50) +
   scale_fill_viridis_c(option = "D") +
-  scale_x_continuous(labels = label_number(scale_cut = cut_si("b"))) +
-  scale_y_continuous(labels = label_number(scale_cut = cut_si("b"))) +
+  scale_x_continuous(labels = label_number(scale_cut = cut_short_scale())) +
+  scale_y_continuous(labels = label_number(scale_cut = cut_short_scale())) +
   labs(
     title = "Voltage vs Current Density",
     x = "Voltage (V)",
@@ -54,12 +51,18 @@ p1 <- ggplot(nev, aes(x = `Voltage (V)`, y = `Current (A)`)) +
   better_theme
 
 ggplotly(p1)
+```
 
-# --- 2. Motor Speed Boxplot ---
-p2_boxplot <- ggplot(nev, aes(x = factor(`Fault Label`), y = `Motor Speed (RPM)`, fill = factor(`Fault Label`))) +
+This interactive scatter plot shows how voltage and current measurements vary across different fault labels. You can zoom, pan, and hover to explore patterns in the dataset.
+
+```{r}
+# ✅ 2) Motor Speed Boxplot — blue-green, short scale
+p2_boxplot <- ggplot(nev, aes(x = factor(`Fault Label`),
+                              y = `Motor Speed (RPM)`,
+                              fill = factor(`Fault Label`))) +
   geom_boxplot(alpha = 0.8, outlier.color = "red", outlier.size = 1) +
   scale_fill_viridis_d(option = "D") +
-  scale_y_continuous(labels = label_number(scale_cut = cut_si("b"))) +
+  scale_y_continuous(labels = label_number(scale_cut = cut_short_scale())) +
   labs(
     title = "Motor Speed Distribution by Fault Label",
     x = "Fault Label",
@@ -69,12 +72,16 @@ p2_boxplot <- ggplot(nev, aes(x = factor(`Fault Label`), y = `Motor Speed (RPM)`
   theme(legend.position = "none")
 
 ggplotly(p2_boxplot)
+```
 
-# --- 3. Vibration Histogram ---
+This interactive line plot reveals the relationship between motor speed and temperature for each fault label, cycling through fault types so you can see how behavior changes.
+
+```{r}
+# ✅ 3) Vibration Histogram — blue-green, short scale
 p3 <- ggplot(nev, aes(x = `Vibration (g)`, fill = factor(`Fault Label`))) +
   geom_histogram(position = "identity", alpha = 0.6, bins = 30, color = "black") +
   scale_fill_viridis_d(option = "D") +
-  scale_x_continuous(labels = label_number(scale_cut = cut_si("b"), accuracy = 0.01)) +
+  scale_x_continuous(labels = label_number(scale_cut = cut_short_scale(), accuracy = 0.01)) +
   labs(
     title = "Distribution of Vibration by Fault Label",
     x = "Vibration (g)",
@@ -83,12 +90,18 @@ p3 <- ggplot(nev, aes(x = `Vibration (g)`, fill = factor(`Fault Label`))) +
   better_theme
 
 ggplotly(p3) %>% layout(legend = list(title = list(text = 'Fault Label')))
+```
 
-# --- 4. Ambient Temp Violin ---
-p4_violin <- ggplot(nev, aes(x = factor(`Fault Label`), y = `Ambient Temp (°C)`, fill = factor(`Fault Label`))) +
+This interactive histogram shows the distribution of vibration intensity for different fault labels, letting you compare how vibration varies with fault type.
+
+```{r}
+# ✅ 4) Ambient Temp Violin — blue-green, short scale
+p4_violin <- ggplot(nev, aes(x = factor(`Fault Label`),
+                             y = `Ambient Temp (°C)`,
+                             fill = factor(`Fault Label`))) +
   geom_violin(alpha = 0.8, trim = TRUE) +
   scale_fill_viridis_d(option = "D") +
-  scale_y_continuous(labels = label_number(scale_cut = cut_si("b"))) +
+  scale_y_continuous(labels = label_number(scale_cut = cut_short_scale())) +
   labs(
     title = "Ambient Temperature Distribution by Fault Label",
     x = "Fault Label",
@@ -99,3 +112,10 @@ p4_violin <- ggplot(nev, aes(x = factor(`Fault Label`), y = `Ambient Temp (°C)`
 
 ggplotly(p4_violin)
 ```
+
+This interactive violin plot shows how ambient temperature and humidity measurements vary for each fault label. By exploring this plot, you can spot possible clusters or trends that might reveal how environmental conditions relate to different fault scenarios.
+
+**Final Summary**
+
+
+*These interactive and animated plots provide a clear overview of how the main factors in the NEV fault dataset relate to each other. By visualizing voltage, current, motor speed, temperature, vibration, ambient temperature, and humidity alongside fault labels, we can spot trends and clusters that may reveal how faults develop under different conditions. Together, these insights can help support better monitoring, fault detection, and maintenance planning for electric vehicles.*
