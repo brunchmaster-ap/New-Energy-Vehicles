@@ -4,13 +4,13 @@ project:
 website:
   title: "New Energy Vehicles"
   navbar:
-  left:
-    - href: index.qmd # Change this
-      text: Home
-    - href: about.qmd
-      text: About
-    - href: sources.qmd
-      text: Sources
+    left:
+      - href: index.qmd
+        text: Home
+      - href: about.qmd
+        text: About
+      - href: sources.qmd
+        text: Sources
 
 format:
   html:
