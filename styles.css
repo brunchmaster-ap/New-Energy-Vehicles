@@ -136,3 +136,13 @@ main,
   word-wrap: break-word !important;
   text-align: center !important;
 }
+
+.navbar .navbar-brand {
+  display: flex;
+  align-items: center;
+}
+
+.navbar .navbar-brand img {
+  height: 35px;
+  margin-right: 12px;
+}
