@@ -3,6 +3,5 @@ title: "Sources"
 format: html
 ---
 
-
 - NEV Fault Dataset: [https://www.kaggle.com/datasets/willianoliveiragibin/new-energy-vehicles/data]
 
