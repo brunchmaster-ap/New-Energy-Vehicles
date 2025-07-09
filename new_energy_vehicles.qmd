@@ -47,7 +47,7 @@ nev <- nev_raw %>%
   mutate(across(all_of(numeric_cols), ~ as.numeric(str_remove_all(., "\\."))))
 ```
 
-This project explores faults in New Energy Vehicles (NEVs) using a real-world dataset and interactive visualizations. By analyzing fault patterns, frequencies, and possible correlations, the goal is to reveal insights that can help improve maintenance strategies and support more reliable NEV design. The visualizations are designed to make complex fault data accessible and engaging, encouraging deeper understanding of the common challenges and failure modes unique to electric and hybrid vehicles. This resource aims to be useful for researchers, engineers, and anyone interested in the technical details behind the transition to cleaner transportation.
+This project examines faults in New Energy Vehicles (NEVs) using real-world data and interactive visuals. By analyzing patterns, frequencies, and correlations, it aims to uncover insights to improve maintenance and support better NEV design. The visualizations make complex fault data easier to explore and understand, highlighting common issues in electric and hybrid vehicles. This resource is intended for researchers, engineers, and anyone interested in the technical side of cleaner transportation.
 
 ```{r}
 # --- Start of unnamed-chunk-2 (Corrected for color, less points, and scale labels) ---
@@ -79,7 +79,7 @@ p_better <- ggplot(nev_sampled, aes(x = `Current (A)`, y = `Temperature (°C)`, 
   scale_y_continuous(labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_viridis_d(option = "D") + # Set color to "D" option for consistency with other plots
   labs(title = "Current vs. Temperature by Fault Label (Sampled Data)",
-       x = "Current (A)", y = "Temperature (°C)", color = "Fault Label") +
+       x = "Current (A)", y = "Temperature (°C)", color = "Fault Label", caption = "Data Source: New Energy Vehicles") +
   better_theme # Apply the consistent theme
 
 plotly::ggplotly(p_better)
@@ -103,7 +103,7 @@ p2_boxplot <- ggplot(nev, aes(x = factor(`Fault Label`),
   labs(
     title = "Motor Speed Distribution by Fault Label",
     x = "Fault Label",
-    y = "Motor Speed (RPM)"
+    y = "Motor Speed (RPM)", caption = "Data Source: New Energy Vehicles"
   ) +
   better_theme +
   theme(legend.position = "none")
@@ -128,7 +128,7 @@ p3 <- ggplot(nev, aes(x = `Vibration (g)`, fill = factor(`Fault Label`))) +
   labs(
     title = "Distribution of Vibration by Fault Label",
     x = "Vibration (g)",
-    fill = "Fault Label"
+    fill = "Fault Label", caption = "Data Source: New Energy Vehicles"
   ) +
   better_theme
 
@@ -152,7 +152,7 @@ p4_violin <- ggplot(nev, aes(x = factor(`Fault Label`),
   labs(
     title = "Ambient Temperature Distribution by Fault Label",
     x = "Fault Label",
-    y = "Ambient Temperature (°C)"
+    y = "Ambient Temperature (°C)", caption = "Data Source: New Energy Vehicles"
   ) +
   better_theme +
   theme(legend.position = "none")
@@ -169,4 +169,4 @@ This plot shows ambient temperature distributions across different fault types. 
 **Final Summary**
 
 
-*These interactive plots offer a comprehensive view of the NEV fault dataset, revealing critical relationships between operational parameters and various fault conditions. The visualizations highlight distinct patterns in current, temperature, motor speed, vibration, and ambient temperature as they correspond to different fault labels. This analysis provides valuable insights for developing more effective predictive maintenance strategies, enabling earlier fault detection, and improving overall electric vehicle reliability.*
+*These interactive plots show key relationships in the NEV fault dataset, highlighting how factors like current, temperature, motor speed, vibration, and ambient temperature relate to different faults. This helps reveal patterns that can support better predictive maintenance, earlier fault detection, and improved electric vehicle reliability.*

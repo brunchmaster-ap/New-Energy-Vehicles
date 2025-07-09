@@ -1,13 +1,12 @@
 ---
 title: "About"
 ---
- My name is Ansh Patel, and these are my connections:
+ My name is Ansh Patel, a rising freshman in Illinois, and these are my connections:
  
- Email: anshbrunch@gmail.com
- GitHub: https://github.com/brunchmaster-ap
+ **Email:** anshbrunch@gmail.com
+
+ **GitHub:** https://github.com/brunchmaster-ap
 
 My project is about New Energy Vehicles and how the NEV Fault Dataset was collected with key variables.
 
-This project was created as a part of Kane’s Data Science Bootcamp.
-
-[Kane's Free Data Science Bootcamp](https://bootcamp.davidkane.info/)
+This project was created as a part of [Kane's Free Data Science Bootcamp](https://bootcamp.davidkane.info/)
