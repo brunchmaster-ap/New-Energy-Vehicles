@@ -32,19 +32,11 @@ better_theme <- theme_minimal(base_size = 14) +
     panel.grid.minor = element_blank()
   )
 
-# ✅ Load data
-# Ensure this path is correct for your system!
-# Read raw CSV (string columns as characters)
-nev_raw <- read_csv("C:/Users/anshb/Downloads/NEV_fault_dataset new (1).csv",
-                     col_types = cols(.default = "c"))
-# Columns to convert to numeric
-numeric_cols <- c("Voltage (V)", "Current (A)", "Motor Speed (RPM)",
-                  "Temperature (°C)", "Vibration (g)",
-                  "Ambient Temp (°C)", "Humidity (%)")
+library(readr) # make sure you have this for parse_number
 
-# Parse numeric columns
+# Better: parse numbers safely, keeping decimals, stripping units
 nev <- nev_raw %>%
-  mutate(across(all_of(numeric_cols), ~ as.numeric(str_remove_all(., "\\."))))
+  mutate(across(all_of(numeric_cols), ~ parse_number(.)))
 ```
 
 This project examines faults in New Energy Vehicles (NEVs) using real-world data and interactive visuals. By analyzing patterns, frequencies, and correlations, it aims to uncover insights to improve maintenance and support better NEV design. The visualizations make complex fault data easier to explore and understand, highlighting common issues in electric and hybrid vehicles. This resource is intended for researchers, engineers, and anyone interested in the technical side of cleaner transportation.
